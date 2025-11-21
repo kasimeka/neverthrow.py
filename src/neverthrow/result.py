@@ -4,12 +4,12 @@ from typing import Callable, Generic, Literal, TypeIs, TypeVar, final, override
 type Result[T, E] = Ok[T] | Err[E]
 
 
-def is_ok[T, E](result: Result[T, E]) -> TypeIs[Ok[T]]:
-    return result.is_ok()
+def is_ok[T, E](r: Result[T, E]) -> TypeIs[Ok[T]]:
+    return r.is_ok()
 
 
-def is_err[T, E](result: Result[T, E]) -> TypeIs[Err[E]]:
-    return result.is_err()
+def is_err[T, E](r: Result[T, E]) -> TypeIs[Err[E]]:
+    return r.is_err()
 
 
 def wrap[T](func: Callable[..., T]) -> Callable[..., Result[T, Exception]]:
