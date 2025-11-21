@@ -1,5 +1,5 @@
 from collections.abc import Awaitable
-from typing import Callable, Literal, TypeIs, final, override
+from typing import Callable, Generic, Literal, TypeIs, TypeVar, final, override
 
 type Result[T, E] = Ok[T] | Err[E]
 
@@ -38,8 +38,12 @@ def pure[T, _E](value: T) -> Result[T, _E]:
     return Ok(value)
 
 
+T = TypeVar("T", covariant=True)
+E = TypeVar("E", covariant=True)
+
+
 @final
-class Ok[T]:
+class Ok(Generic[T]):
     __match_args__ = ("value",)
 
     def __init__(self, value: T):
@@ -72,7 +76,7 @@ class Ok[T]:
     def or_else[_E](self, _func: Callable[[_E], Result[T, _E]]) -> Result[T, _E]:
         return self
 
-    def unwrap_or(self, _default: T) -> T:
+    def unwrap_or(self, _default: object) -> T:
         return self.value
 
     def unwrap_or_else[_E](self, _func: Callable[[_E], T]) -> T:
@@ -85,12 +89,14 @@ class Ok[T]:
     def inspect_err[_E](self, _func: Callable[[_E], object]) -> Ok[T]:
         return self
 
-    def flatten[_E](self: Ok[Result[T, _E]]) -> Result[T, _E]:
+    def flatten[InnerT, InnerE](
+        self: Ok[Result[InnerT, InnerE]],
+    ) -> Result[InnerT, InnerE]:
         return self.value
 
 
 @final
-class Err[E]:
+class Err(Generic[E]):
     __match_args__ = ("error",)
 
     def __init__(self, error: E):
@@ -134,5 +140,5 @@ class Err[E]:
         _ = func(self.error)
         return self
 
-    def flatten[_T](self: Err[E]) -> Result[_T, E]:
+    def flatten[_T](self: Err[E]) -> Err[E]:
         return self
