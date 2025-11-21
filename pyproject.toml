@@ -1,0 +1,21 @@
+[build-system]
+requires = ["flit_core >= 3.12.0"]
+build-backend = "flit_core.buildapi"
+
+[project]
+name = "neverthrow"
+version = "0.1.0"
+authors = [{ name="ورد", email="kasimeka@tuta.io" }]
+description = "An implementation of the either monad (rust's Result type)"
+readme = "readme.md"
+requires-python = ">=3.14"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+]
+license = "AGPL-1.0-only"
+license-files = ["LICEN[CS]E*"]
+
+[project.urls]
+Homepage = "https://github.com/kasimeka/neverthrow.py"
+Issues = "https://github.com/kasimeka/neverthrow.py/issues"
