@@ -1,3 +1,4 @@
+from collections.abc import Awaitable
 from typing import Callable, Literal, TypeIs, final, override
 
 type Result[T, E] = Ok[T] | Err[E]
@@ -11,19 +12,24 @@ def is_err[T, E](result: Result[T, E]) -> TypeIs[Err[E]]:
     return result.is_err()
 
 
-def fromThunk[T, E](
-    func: Callable[[], T],
-    error_handler: Callable[[Exception], E] = lambda e: e,
-) -> Result[T, E]:
-    try:
-        return Ok(func())
-    except Exception as e:
-        return Err(error_handler(e))
-
-
 def wrap[T](func: Callable[..., T]) -> Callable[..., Result[T, Exception]]:
     def decorator(*args: object, **kwargs: object) -> Result[T, Exception]:
-        return fromThunk(lambda: func(*args, **kwargs))
+        try:
+            return Ok(func(*args, **kwargs))
+        except Exception as e:
+            return Err(e)
+
+    return decorator
+
+
+def wrap_async[T](
+    func: Callable[..., Awaitable[T]],
+) -> Callable[..., Awaitable[Result[T, Exception]]]:
+    async def decorator(*args: object, **kwargs: object) -> Result[T, Exception]:
+        try:
+            return Ok(await func(*args, **kwargs))
+        except Exception as e:
+            return Err(e)
 
     return decorator
 
