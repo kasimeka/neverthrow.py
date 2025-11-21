@@ -85,6 +85,9 @@ class Ok[T]:
     def inspect_err[_E](self, _func: Callable[[_E], object]) -> Ok[T]:
         return self
 
+    def flatten[_E](self: Ok[Result[T, _E]]) -> Result[T, _E]:
+        return self.value
+
 
 @final
 class Err[E]:
@@ -129,4 +132,7 @@ class Err[E]:
 
     def inspect_err(self, func: Callable[[E], object]) -> Err[E]:
         _ = func(self.error)
+        return self
+
+    def flatten[_T](self: Err[E]) -> Result[_T, E]:
         return self
