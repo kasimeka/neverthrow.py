@@ -1,8 +1,8 @@
 # pyright: reportUnknownArgumentType=false,reportUnknownVariableType=false,reportUnknownMemberType=false,reportArgumentType=false
 """Tests to validate that Result[T, E] satisfies the monad laws."""
 
-import result
-from result import Ok, Err, Result
+from neverthrow import result
+from neverthrow.result import Ok, Err, Result
 
 
 def double(x: int) -> Result[int, str]:
