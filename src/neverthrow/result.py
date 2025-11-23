@@ -5,11 +5,11 @@ type Result[T, E] = Ok[T] | Err[E]
 
 
 def is_ok[T, E](r: Result[T, E]) -> TypeIs[Ok[T]]:
-    return r.is_ok()
+    return r._is_ok()  # pyright: ignore[reportPrivateUsage]
 
 
 def is_err[T, E](r: Result[T, E]) -> TypeIs[Err[E]]:
-    return r.is_err()
+    return r._is_err()  # pyright: ignore[reportPrivateUsage]
 
 
 def wrap[T](func: Callable[..., T]) -> Callable[..., Result[T, Exception]]:
@@ -53,10 +53,10 @@ class Ok(Generic[T]):
     def __repr__(self) -> str:
         return f"Ok({self.value!r})"
 
-    def is_ok(self) -> Literal[True]:
+    def _is_ok(self) -> Literal[True]:
         return True
 
-    def is_err(self) -> Literal[False]:
+    def _is_err(self) -> Literal[False]:
         return False
 
     def and_then[NewT, E](
@@ -66,9 +66,6 @@ class Ok(Generic[T]):
 
     def map[NewT](self, func: Callable[[T], NewT]) -> Ok[NewT]:
         return Ok(func(self.value))
-
-    def __or__[NewT](self, func: Callable[[T], NewT]) -> Ok[NewT]:
-        return self.map(func)
 
     def map_err[_E](self, _func: Callable[[_E], _E]) -> Ok[T]:
         return self
@@ -106,19 +103,16 @@ class Err(Generic[E]):
     def __repr__(self) -> str:
         return f"Err({self.error!r})"
 
-    def is_ok(self) -> Literal[False]:
+    def _is_ok(self) -> Literal[False]:
         return False
 
-    def is_err(self) -> Literal[True]:
+    def _is_err(self) -> Literal[True]:
         return True
 
     def and_then[_T, _U](self, _func: Callable[[_T], Result[_U, E]]) -> Err[E]:
         return self
 
     def map[_T, _U](self, _func: Callable[[_T], _U]) -> Err[E]:
-        return self
-
-    def __or__[_T, _U](self, _func: Callable[[_T], _U]) -> Err[E]:
         return self
 
     def map_err[NewE](self, func: Callable[[E], NewE]) -> Err[NewE]:

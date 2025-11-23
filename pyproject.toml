@@ -4,7 +4,7 @@ build-backend = "flit_core.buildapi"
 
 [project]
 name = "neverthrow"
-version = "0.2.1"
+version = "0.2.2"
 authors = [{ name="ورد", email="kasimeka@tuta.io" }]
 description = "An implementation of the either monad (rust's Result type)"
 readme = "readme.md"
@@ -22,4 +22,4 @@ Issues = "https://github.com/kasimeka/neverthrow.py/issues"
 
 [tool.pytest.ini_options]
 pythonpath = ["src"]
-addopts = ["-n", "auto", "-v"]
+addopts = ["-v"]
