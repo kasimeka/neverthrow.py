@@ -22,12 +22,36 @@ def wrap[T](func: Callable[..., T]) -> Callable[..., Result[T, Exception]]:
     return decorator
 
 
+def flat_wrap[T, E](
+    func: Callable[..., Result[T, E]],
+) -> Callable[..., Result[T, E | Exception]]:
+    def decorator(*args: object, **kwargs: object) -> Result[T, E | Exception]:
+        try:
+            return func(*args, **kwargs)
+        except Exception as e:
+            return Err(e)
+
+    return decorator
+
+
 def wrap_async[T](
     func: Callable[..., Awaitable[T]],
 ) -> Callable[..., Awaitable[Result[T, Exception]]]:
     async def decorator(*args: object, **kwargs: object) -> Result[T, Exception]:
         try:
             return Ok(await func(*args, **kwargs))
+        except Exception as e:
+            return Err(e)
+
+    return decorator
+
+
+def flat_wrap_async[T, E](
+    func: Callable[..., Awaitable[Result[T, E]]],
+) -> Callable[..., Awaitable[Result[T, E | Exception]]]:
+    async def decorator(*args: object, **kwargs: object) -> Result[T, E | Exception]:
+        try:
+            return await func(*args, **kwargs)
         except Exception as e:
             return Err(e)
 
